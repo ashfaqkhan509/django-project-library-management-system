@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}All Books{% endblock title %}
+
+{% block content %}
+<div class="container-fluid">
+    <h3 class="m-4">All Books <a href="{% url 'add_book' %}"><i class="fa-solid fa-plus mt-5"></i></a></h3>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <div class="alert alert-dismissible alert-success">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <span {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span>
+        </div>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ISBN</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Publisher</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books_obj %}
+                <tr class="table-primary">
+                    <td>{{ book.isbn }}</td>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.category }}</td>
+                    <td>{{ book.publisher}}</td>
+                    <td>{{ book.status }}</td>
+
+                    <td>
+                        
+
+                        {% if not book.status == 'loaned'%}
+                        <a href="{% url 'issue_book' book.id %}"><i class="fa-solid fa-paper-plane btn btn-info"></i></a>
+                        {% endif %}
+
+
+                        <a href="{% url 'edit_book' book.id %}"><i class="fa-solid fa-pen btn btn-warning"></i></a>
+                        <a href="" data-bs-toggle="modal" data-bs-target="#deleteBook{{book.id}}"><i class="fa-solid fa-trash btn btn-danger"></i></a>
+                        
+                        <!-- delete modal -->
+                        {% include 'delete_book_modal.html' %}
+                        <!-- end delete modal -->
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+
+    {% if books_obj.paginator.num_pages > 1 %}
+    <div class="m-4 text-start">
+        <ul class="pagination">
+            {% if books_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ books_obj.previous_page_number }}">&laquo;</a>
+            </li>
+            {% endif %}
+            
+            {% for page in books_obj.paginator.page_range %}
+            {% if page == books_obj.number %}
+            <li class="page-item active">
+                <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            
+            {% if books_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ books_obj.next_page_number }}">&raquo;</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
+    
+</div>
+{% endblock content %}

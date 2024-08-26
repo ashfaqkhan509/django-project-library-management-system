@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}All Members{% endblock title %}
+
+{% block content %}
+<div class="container-fluid">
+    <h3 class="m-4">All Member <a href="{% url 'add_member' %}"><i class="fa-solid fa-plus mt-5"></i></a></h3>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <div class="alert alert-dismissible alert-success">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <span {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span>
+        </div>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Date of Membership</th>
+                    <th scope="col">Account Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in member_obj %}
+                <tr class="table-primary">
+                    <td>{{ member.first_name }} {{ member.last_name }}</td>
+                    <td>{{ member.email }}</td>
+                    <td>{{ member.membership_date }}</td>
+                    <td>{{ member.membership_status }}</td>
+                    <td>
+                        <a href="{% url 'edit_member' member.id %}"><i class="fa-solid fa-pen btn btn-warning"></i></a>
+                        <a href="" data-bs-toggle="modal" data-bs-target="#deleteMember{{member.id}}"><i class="fa-solid fa-trash btn btn-danger"></i></a>
+    
+                        <!-- Include delete member modal -->
+                        {% include 'delete_member_modal.html' %}
+                        <!-- End delete member modal -->
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- Pagination -->
+    {% if member_obj.paginator.num_pages > 1 %}
+    <div class="m-4">
+        <ul class="pagination">
+            {% if member_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ member_obj.previous_page_number }}">&laquo;</a>
+            </li>
+            {% endif %}
+            
+            {% for page in member_obj.paginator.page_range %}
+            {% if page == member_obj.number %}
+            <li class="page-item active">
+                <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            
+            {% if member_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ member_obj.next_page_number }}">&raquo;</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
+    
+</div>
+{% endblock content %}

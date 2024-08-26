@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}All Issued Book{% endblock title %}
+
+{% block content %}
+<div class="container-fluid">
+    <h3 class="m-4">All Issued Books</h3>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <div class="alert alert-dismissible alert-success">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <span {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span>
+        </div>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Borrower</th>
+                    <th scope="col">Book</th>
+                    <th scope="col">Issue Date</th>
+                    <th scope="col">Expiry Date</th>
+                    <th scope="col">Fine Per Day</th>
+                    <th scope="col">Total Fine</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr class="table-primary">
+                    <td>{{ book.borrower }}</td>
+                    <td>{{ book.book }}</td>
+                    <td>{{ book.issued_date }}</td>
+                    <td>{{ book.expired_date }}</td>
+                    <td>{{ book.fine_per_day}}</td>
+                    <td>{{ book.get_total_fine }}</td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% endblock content %}
